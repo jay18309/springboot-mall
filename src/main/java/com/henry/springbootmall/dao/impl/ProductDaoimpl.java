@@ -1,6 +1,7 @@
 package com.henry.springbootmall.dao.impl;
 
 import com.henry.springbootmall.dao.ProductDao;
+import com.henry.springbootmall.dto.ProductRequest;
 import com.henry.springbootmall.model.Product;
 import com.henry.springbootmall.rowmapper.ProductRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class PeoductDaoimpl implements ProductDao {
+public class ProductDaoimpl implements ProductDao {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -35,5 +36,19 @@ public class PeoductDaoimpl implements ProductDao {
             return null;
         }
 
+    }
+
+    @Override
+    public Integer createProduct(ProductRequest productRequest) {
+
+        String sql = "insert into product(product_name, category, image_url, price, stock, description, created_date, last_modified_date)\n" +
+                "values (:pro)";
+
+        Map<String, Object> map = new HashMap<>();
+//        map.put("Pro");
+
+
+
+        return 0;
     }
 }
