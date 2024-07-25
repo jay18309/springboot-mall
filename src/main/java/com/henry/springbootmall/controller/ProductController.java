@@ -3,6 +3,8 @@ package com.henry.springbootmall.controller;
 import com.henry.springbootmall.dto.ProductRequest;
 import com.henry.springbootmall.model.Product;
 import com.henry.springbootmall.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Tag(name = "product api")
 @RestController
 public class ProductController {
 
     @Autowired
     private ProductService productService;
 
+    @Operation(summary = "查詢商品byId")
     @GetMapping("/products/{productId}")
     public ResponseEntity<Product> gerProduct(@PathVariable Integer productId) {
         Product product = productService.getProductById(productId);
@@ -27,6 +31,12 @@ public class ProductController {
         }
     }
 
+    /**
+     * 創建新商品
+     * @param productRequest
+     * @return ResponseEntity
+     */
+    @Operation(summary = "創建新商品")
     @PostMapping("/products")
     public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductRequest productRequest) {
         Integer productId = productService.createProduct(productRequest);
