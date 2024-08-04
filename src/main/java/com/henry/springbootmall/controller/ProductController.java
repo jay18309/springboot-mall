@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Tag(name = "product api")
 @RestController
@@ -19,9 +20,16 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Operation(summary = "查詢商品哩列表")
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getProducts(){
+        List<Product> productList = productService.getProducts();
+        return ResponseEntity.status(HttpStatus.OK).body(productList);
+    }
+
     @Operation(summary = "查詢商品byId")
     @GetMapping("/products/{productId}")
-    public ResponseEntity<Product> gerProduct(@PathVariable Integer productId) {
+    public ResponseEntity<Product> getProduct(@PathVariable Integer productId) {
         Product product = productService.getProductById(productId);
 
         if (product != null){
@@ -44,6 +52,31 @@ public class ProductController {
         Product product = productService.getProductById(productId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
+    }
+
+    @Operation(summary = "修改商品")
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer productId,
+                                                 @RequestBody @Valid ProductRequest productRequest){
+        Product product = productService.getProductById(productId);
+
+        if (product == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(product);
+        }
+
+        productService.updateProduct(productId, productRequest);
+
+        Product updateProduct = productService.getProductById(productId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updateProduct);
+    }
+
+    @Operation(summary = "刪除商品")
+    @DeleteMapping("/product/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId){
+
+        productService.deleteProductById(productId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
