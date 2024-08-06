@@ -1,5 +1,6 @@
 package com.henry.springbootmall.controller;
 
+import com.henry.springbootmall.constant.ProductCategory;
 import com.henry.springbootmall.dto.ProductRequest;
 import com.henry.springbootmall.model.Product;
 import com.henry.springbootmall.service.ProductService;
@@ -20,10 +21,14 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Operation(summary = "查詢商品哩列表")
+    @Operation(summary = "查詢全部商品列表(可By類別)")
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(){
-        List<Product> productList = productService.getProducts();
+    public ResponseEntity<List<Product>> getProducts(
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) String search
+    ){
+        List<Product> productList = productService.getProducts(category, search);
+
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
 
