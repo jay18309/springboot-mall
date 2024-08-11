@@ -1,6 +1,7 @@
 package com.henry.springbootmall.controller;
 
 import com.henry.springbootmall.constant.ProductCategory;
+import com.henry.springbootmall.dto.ProductQueryParams;
 import com.henry.springbootmall.dto.ProductRequest;
 import com.henry.springbootmall.model.Product;
 import com.henry.springbootmall.service.ProductService;
@@ -27,7 +28,11 @@ public class ProductController {
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search
     ){
-        List<Product> productList = productService.getProducts(category, search);
+        ProductQueryParams productQueryParams = new ProductQueryParams();
+        productQueryParams.setCategory(category);
+        productQueryParams.setSearch(search);
+
+        List<Product> productList = productService.getProducts(productQueryParams);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
