@@ -5,6 +5,7 @@ import com.henry.springbootmall.dto.ProductQueryParams;
 import com.henry.springbootmall.dto.ProductRequest;
 import com.henry.springbootmall.model.Product;
 import com.henry.springbootmall.service.ProductService;
+import com.henry.springbootmall.util.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class ProductController {
 
     @Operation(summary = "查詢全部商品列表(可By類別)")
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(
+    public ResponseEntity<Page<Product>> getProducts(
             //查詢條件 Filtering
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search,
@@ -48,9 +49,20 @@ public class ProductController {
         productQueryParams.setLimit(limit);
         productQueryParams.setOffset(offset);
 
+        // 取得 product List
         List<Product> productList = productService.getProducts(productQueryParams);
 
-        return ResponseEntity.status(HttpStatus.OK).body(productList);
+        // 取得 product 總數
+        Integer total = productService.countProduct(productQueryParams);
+
+        // 將回傳格式改為JSON Object －分頁
+        Page<Product> page = new Page<>();
+        page.setLimit(limit);
+        page.setOffset(offset);
+        page.setTotal(total);
+        page.setResults(productList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     @Operation(summary = "查詢商品byId")
